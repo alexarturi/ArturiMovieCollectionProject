@@ -165,7 +165,7 @@ public class MovieCollection
     private void searchCast()
     {
         System.out.print("Enter a cast member you want to search for: ");
-        String castTerm = scanner.nextLine();
+        String castTerm = scanner.nextLine().toLowerCase();
 
         ArrayList<String> castMembers = new ArrayList<String>();
         for (int i = 0; i < movies.size(); i++)
@@ -351,49 +351,60 @@ public class MovieCollection
 
     private void listHighestRated()
     {
-        ArrayList<Movie> sortedMovies = new ArrayList<Movie>();
-        sortedMovies.add(movies.get(0));
-        for(int i = 1; i<movies.size(); i++){
-            int index = 0;
-            for (int j = 0; i<sortedMovies.size(); j++){
-                if(movies.get(i).getUserRating()>sortedMovies.get(j).getUserRating()){
+        ArrayList<Movie> sortedMovies = movies;
+        for(int i = 0; i<sortedMovies.size()-1; i++){
+            int index = i;
+            for (int j = i+1; j<sortedMovies.size(); j++){
+                if(sortedMovies.get(j).getUserRating()<sortedMovies.get(index).getUserRating()){
                     index = j;
                 }
             }
-            sortedMovies.add(index, movies.get(i));
+            Movie smallerNumber = sortedMovies.get(index);
+            sortedMovies.set(index, sortedMovies.get(i));
+            sortedMovies.set(i, smallerNumber);
         }
-        for (int i = 0; i < sortedMovies.size(); i++)
+        Collections.reverse(sortedMovies);
+        for (int i = 0; i <50 ; i++)
         {
             Movie m = sortedMovies.get(i);
 
             // this will print index 0 as choice 1 in the results list; better for user!
             int choiceNum = i + 1;
 
-            System.out.println("" + choiceNum + ". " + m);
+            System.out.println("" + choiceNum + ". " + m.getTitle() + ": " + m.getUserRating());
         }
-        /*
-        ArrayList<Double> allRatings = new ArrayList<Double>();
-        for (int i = 0; i<movies.size(); i++){
-            allRatings.add(movies.get(i).getUserRating());
-        }
-        Collections.sort(allRatings, Collections.reverseOrder());
 
-        for(int i = 0; i<50; i++){
-            Double ret = allRatings.get(i);
-            int num = i+1;
-            System.out.println(""+num + ". "+ ret);
-        }
-         */
+        System.out.println("Which movie would you like to learn more about?");
+        System.out.print("Enter number: ");
+
+        int ch = scanner.nextInt();
+        scanner.nextLine();
+
+        Movie selectedMovie = sortedMovies.get(ch - 1);
+
+        displayMovieInfo(selectedMovie);
+
+        System.out.println("\n ** Press Enter to Return to Main Menu **");
+        scanner.nextLine();
     }
 
     private void listHighestRevenue()
     {
-        ArrayList<Movie> highestRevenue = new ArrayList<Movie>();
-        for (int i = 0; i<50; i++){
-            highestRevenue.add(movies.get(i));
+        ArrayList<Movie> highestRevenue = movies;
+        for(int i = 0; i<highestRevenue.size()-1; i++){
+            int index = i;
+            for (int j = i+1; j<highestRevenue.size(); j++){
+                if(highestRevenue.get(j).getRevenue()<highestRevenue.get(index).getRevenue()){
+                    index = j;
+                }
+            }
+            Movie smallerNumber = highestRevenue.get(index);
+            highestRevenue.set(index, highestRevenue.get(i));
+            highestRevenue.set(i, smallerNumber);
         }
+        Collections.reverse(highestRevenue);
         System.out.println("Highest Grossing Movies: ");
-        for (int i = 0; i<highestRevenue.size(); i++){
+        for (int i = 0; i<50; i++){
             String ret = "Title: " + highestRevenue.get(i).getTitle() + " | Revenue: " + highestRevenue.get(i).getRevenue();
             int num = i+1;
             System.out.println(""+num+". " + ret);
